@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+# from xml.dom.minidom import parse
+import xml.dom.minidom
+
+
+listStatus = []
+listCommand = []
+
+# Open XML document using minidom parser
+DOMTree = xml.dom.minidom.parse("format.xml")
+ZCInterfaces = DOMTree.documentElement.getElementsByTagName("ZCInterface")
+
+# Build the internal representation of the bitmapping using the XML input
+for ZCInterface in ZCInterfaces:  # There should be a single one
+    if ZCInterface.hasAttribute("version"):
+        print("ZC Interface version: " + ZCInterface.getAttribute("version"))
+Statuses = DOMTree.documentElement.getElementsByTagName("Status")
+for Status in Statuses:
+    dict = {'pos': "", 'name': "", 'group': "", 'next': ""}
+    if Status.hasAttribute("pos"):
+        dict['pos'] = Status.getAttribute("pos")
+    if Status.hasAttribute("name"):
+        dict['name'] = Status.getAttribute("name")
+    if Status.hasAttribute("group"):
+        dict['group'] = Status.getAttribute("group")
+    if Status.hasAttribute("next"):
+        dict['next'] = Status.getAttribute("next").split()
+    listStatus.append(dict)
+print("List of status: " + str(listStatus))
+
+Commands = DOMTree.documentElement.getElementsByTagName("Command")
+for Command in Commands:
+    dict = {'pos': "", 'name': "", 'group': "", 'next': ""}
+    if Command.hasAttribute("pos"):
+        dict['pos'] = Command.getAttribute("pos")
+    if Command.hasAttribute("name"):
+        dict['name'] = Command.getAttribute("name")
+    if Command.hasAttribute("group"):
+        dict['group'] = Command.getAttribute("group")
+    if Command.hasAttribute("next"):
+        dict['next'] = Command.getAttribute("next").split()
+    listCommand.append(dict)
+print("List of commands: " + str(listCommand))
+
+InterfaceFile = open('ZC2_A.hcf', 'r')
+stringRead = InterfaceFile.readlines()
+i = 0
+for string in stringRead:
+    print('this in line ' + str(i) +': ' + string)
+    i += 1
+InterfaceFile.close()
